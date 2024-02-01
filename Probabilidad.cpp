@@ -1,40 +1,47 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
-
+#include <set>
+ 
 using namespace std;
-
-void backtrack(vector<int> &nums, int first, vector<int> &current, vector<vector<int>> &result) {
-    if (current.size() == 7) {
-        result.push_back(current);
-        return;
-    }
-
-    for (int i = first; i < nums.size(); ++i) {
-        current.push_back(nums[i]);
-        backtrack(nums, i + 1, current, result);
-        current.pop_back();
-    }
+ 
+void permute(vector<int> &numeros, int inicio, vector<vector<int>> &resultado, set<vector<int>> &usadas) {
+    int inicio2=0;
+    if (inicio == numeros.size() - 1) {
+        if (usadas.count(numeros) == 0) {
+            if(numeros[inicio2]!=0)
+            {
+                resultado.push_back(numeros);
+                usadas.insert(numeros);
+            }
+        }
+        return;
+    }
+ 
+    for (int i = inicio; i < numeros.size(); i++) {
+        swap(numeros[inicio], numeros[i]);
+        permute(numeros, inicio + 1, resultado, usadas);
+        swap(numeros[inicio], numeros[i]);
+    }
 }
-
-vector<vector<int>> permuteUnique(vector<int> &nums) {
-    sort(nums.begin(), nums.end());
-    vector<vector<int>> result;
-    vector<int> current;
-    backtrack(nums, 0, current, result);
-    return result;
+ 
+vector<vector<int>> permute(vector<int> &numeros) {
+    vector<vector<int>> resultado;
+    set<vector<int>> usadas;
+    permute(numeros, 0, resultado, usadas);
+    return resultado;
 }
-
+ 
 int main() {
-    vector<int> nums = {1, 1, 4, 4, 5, 5, 0};
-    vector<vector<int>> permutations = permuteUnique(nums);
-
-    for (auto &p : permutations) {
-        for (int i : p) {
-            cout << i;
-        }
-        cout << endl;
-    }
-
-    return 0;
+    vector<int> numeros = {1, 1, 4, 4, 5, 5, 0};
+    vector<vector<int>> permutaciones = permute(numeros);
+ 
+    for (auto &p : permutaciones) {
+        for (int i : p) {
+            cout << i;
+        }
+        cout << endl;
+    }
+ 
+    cout << "Total permutaciones: " << permutaciones.size() << endl;
+    return 0;
 }
